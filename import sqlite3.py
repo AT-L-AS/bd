@@ -4,8 +4,7 @@ def create_tables(cursor):
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS animals (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT UNIQUE NOT NULL COLLATE NOCASE,
-            has_legs INTEGER DEFAULT 1
+            name TEXT UNIQUE NOT NULL COLLATE NOCASE
         )
     ''')
     cursor.execute('''
@@ -20,15 +19,15 @@ def create_tables(cursor):
 
 def animaldef(cursor):
     animals_data = [
-        ('Собака', 1),
-        ('Кошка', 1),
-        ('Лошадь', 1),
-        ('Птица', 0),
-        ('Змея', 0),
-        ('Рыба', 0),
-        ('Человек', 1)
+        ('Собака',),
+        ('Кошка',),
+        ('Лошадь',),
+        ('Птица',),
+        ('Змея',),
+        ('Рыба',),
+        ('Человек',)
     ]
-    cursor.executemany("INSERT OR IGNORE INTO animals (name, has_legs) VALUES (?, ?)", animals_data)
+    cursor.executemany("INSERT OR IGNORE INTO animals (name) VALUES (?)", animals_data)
 
     kon_data = [
         (1, 'лапы', 4),
@@ -36,11 +35,10 @@ def animaldef(cursor):
         (3, 'копыта', 4),
         (4, 'крылья', 2),
         (5, None, 0),
-        (6, 'плавники', 0),
+        (6, 'плавники', 5),
         (7, 'ноги', 2)
     ]
     cursor.executemany("INSERT OR IGNORE INTO appendages (animal_id, type, numm) VALUES (?, ?, ?)", kon_data)
-
 
 def infodef(cursor, animal_name):
     cursor.execute("""
@@ -53,7 +51,6 @@ def infodef(cursor, animal_name):
         WHERE a.name = ?
     """, (animal_name,))
     return cursor.fetchone()
-
 
 def main():
     conn = sqlite3.connect('animals.db')
@@ -77,13 +74,10 @@ def main():
                     print("Нет конечностей.")
             else:
                 print(f"Животное '{animal_name}' не найдено.")
-        conn.commit()
     except:
         print(f"Ошибка работы с базой данных")
     finally:
-        if conn:
-            conn.close()
-
+        conn.close()
 
 if __name__ == "__main__":
     main()
